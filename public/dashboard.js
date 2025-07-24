@@ -5,7 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const folderInput = document.getElementById("folderName");
   const fileList = document.getElementById("fileList");
   const searchInput = document.getElementById("searchInput");
+  const renameResult = document.getElementById("renameResult");
 
+  // 🟢 Handle Upload
   uploadForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -34,12 +36,14 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchFiles();
   });
 
+  // 🟢 Fetch file list
   async function fetchFiles() {
     const res = await fetch("/files");
     const files = await res.json();
     displayFiles(files);
   }
 
+  // 🟢 Display filtered or full list
   function displayFiles(files) {
     fileList.innerHTML = "";
     const search = searchInput.value.toLowerCase();
@@ -53,7 +57,36 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
+  // 🟢 Re-filter on search
   searchInput.addEventListener("input", fetchFiles);
+
+  // 🟢 Handle Rename
+  document.getElementById("renameForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // gather rename form inputs
+    const type = document.getElementById("renameType").value.trim();
+    const oldName = document.getElementById("oldName").value.trim();
+    const newName = document.getElementById("newName").value.trim();
+    const folder = document.getElementById("renameFolder").value.trim() || "root";
+
+    const res = await fetch("/rename", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type, oldName, newName, folder }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      renameResult.textContent = data.message || "Rename successful!";
+      renameResult.style.color = "green";
+      fetchFiles(); // <-- Refresh the file list here after renaming
+    } else {
+      renameResult.textContent = data.error || "Rename failed.";
+      renameResult.style.color = "red";
+    }
+  });
 
   fetchFiles(); // initial load
 });

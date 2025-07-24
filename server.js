@@ -28,12 +28,12 @@ app.post("/login", (req, res) => {
   }
 });
 
-// 🟢 Serve dashboard
+// 🟢 Serve dashboard page
 app.get("/dashboard.html", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
 
-// 🟢 Upload route
+// 🟢 Upload route (with unique naming and folders)
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -53,6 +53,11 @@ app.post("/upload", upload.single("file"), (req, res) => {
 
   const filePath = path.join(folderPath, name);
 
+  // Check if file already exists to enforce unique naming
+  if (fs.existsSync(filePath)) {
+    return res.status(400).json({ message: "File with that name already exists." });
+  }
+
   fs.writeFile(filePath, file.buffer, (err) => {
     if (err) {
       console.error("Error saving file:", err);
@@ -63,7 +68,7 @@ app.post("/upload", upload.single("file"), (req, res) => {
   });
 });
 
-// 🟢 List files
+// 🟢 List all files (recursively) from uploads folder
 app.get("/files", (req, res) => {
   const allFiles = [];
 
@@ -84,6 +89,29 @@ app.get("/files", (req, res) => {
 
   readFilesRecursively(path.join(__dirname, "uploads"));
   res.json(allFiles);
+});
+
+// 🟡 Rename file or folder route
+app.post("/rename", (req, res) => {
+  const { type, oldName, newName, folder = "root" } = req.body;
+  const basePath = path.join(__dirname, "uploads", folder);
+  const oldPath = path.join(basePath, oldName);
+  const newPath = path.join(basePath, newName);
+
+  if (!fs.existsSync(oldPath)) {
+    return res.status(404).json({ error: `${type} not found` });
+  }
+
+  if (fs.existsSync(newPath)) {
+    return res.status(400).json({ error: `New ${type} name already exists` });
+  }
+
+  fs.rename(oldPath, newPath, (err) => {
+    if (err) {
+      return res.status(500).json({ error: "Rename failed" });
+    }
+    res.json({ message: `${type} renamed successfully` });
+  });
 });
 
 // 🚀 Start server

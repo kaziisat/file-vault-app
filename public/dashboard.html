@@ -2,28 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>File Vault Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
-    <h2>File Vault Dashboard</h2>
-    
+    <h1>📁 File Vault Dashboard</h1>
+
     <!-- Upload Form -->
     <form id="uploadForm">
-      <input type="text" id="fileName" placeholder="Enter file name" required />
-      <input type="text" id="folderName" placeholder="Folder name (optional)" />
+      <label for="fileName">File Name:</label>
+      <input type="text" id="fileName" required />
+
+      <label for="folderName">Folder:</label>
+      <input type="text" id="folderName" placeholder="Default: root" />
+
+      <label for="fileInput">Choose File:</label>
       <input type="file" id="fileInput" required />
+
       <button type="submit">Upload</button>
     </form>
 
-    <!-- Search -->
-    <input type="text" id="searchInput" placeholder="Search files" />
+    <hr />
 
-    <!-- File list -->
+    <!-- Rename Form -->
+    <h3>Rename File or Folder</h3>
+    <form id="renameForm">
+      <label for="renameType">Type (file or folder):</label>
+      <input type="text" id="renameType" placeholder="file or folder" required />
+
+      <label for="oldName">Current Name:</label>
+      <input type="text" id="oldName" placeholder="Current name" required />
+
+      <label for="newName">New Name:</label>
+      <input type="text" id="newName" placeholder="New name" required />
+
+      <label for="renameFolder">Folder (optional):</label>
+      <input type="text" id="renameFolder" placeholder="Folder name, default root" />
+
+      <button type="submit">Rename</button>
+    </form>
+    <p id="renameResult"></p>
+
+    <hr />
+
+    <!-- Search Files -->
+    <label for="searchInput">Search files:</label>
+    <input type="text" id="searchInput" placeholder="Search files by name..." />
+
+    <!-- File List -->
     <ul id="fileList"></ul>
   </div>
 
   <script src="dashboard.js"></script>
 </body>
 </html>
+
