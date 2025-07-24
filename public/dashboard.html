@@ -2,34 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
-    <h1>📁 File Dashboard</h1>
-
-    <!-- ✅ Working Upload Form -->
-    <form id="uploadForm" enctype="multipart/form-data">
-      <label for="fileName">File Name:</label>
-      <input type="text" id="fileName" name="name" required />
-
-      <label for="fileInput">Choose File:</label>
-      <input type="file" id="fileInput" name="file" required />
-
+    <h2>File Vault Dashboard</h2>
+    
+    <!-- Upload Form -->
+    <form id="uploadForm">
+      <input type="text" id="fileName" placeholder="Enter file name" required />
+      <input type="text" id="folderName" placeholder="Folder name (optional)" />
+      <input type="file" id="fileInput" required />
       <button type="submit">Upload</button>
     </form>
 
-    <hr/>
+    <!-- Search -->
+    <input type="text" id="searchInput" placeholder="Search files" />
 
-    <h2>🔍 Search Files</h2>
-    <input type="text" id="searchInput" placeholder="Search by name..." />
-
+    <!-- File list -->
     <ul id="fileList"></ul>
   </div>
 
   <script src="dashboard.js"></script>
 </body>
 </html>
-
