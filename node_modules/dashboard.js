@@ -1,0 +1,47 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const uploadForm = document.getElementById("uploadForm");
+  const fileInput = document.getElementById("fileInput");
+  const fileNameInput = document.getElementById("fileName");
+  const searchInput = document.getElementById("searchInput");
+  const fileList = document.getElementById("fileList");
+
+  // Upload file
+  uploadForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+    formData.append("name", fileNameInput.value);
+
+    const res = await fetch("/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await res.json();
+    alert(result.message);
+    uploadForm.reset();
+    fetchFiles();
+  });
+
+  // Search and display files
+  searchInput.addEventListener("input", fetchFiles);
+
+  async function fetchFiles() {
+    const res = await fetch("/files");
+    const files = await res.json();
+
+    const query = searchInput.value.toLowerCase();
+    fileList.innerHTML = "";
+
+    files
+      .filter((file) => file.toLowerCase().includes(query))
+      .forEach((file) => {
+        const li = document.createElement("li");
+        li.textContent = file;
+        fileList.appendChild(li);
+      });
+  }
+
+  fetchFiles(); // initial load
+});
